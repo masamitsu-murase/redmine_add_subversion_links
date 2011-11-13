@@ -1,0 +1,7 @@
+h1. Redmine Open TortoiseSVN plugin
+
+h2. Overview
+
+This plugin adds links to Subversion repository.
+You can open TortoiseSVN directly if you use Firefox and you have installed "Open TortoiseSVN":https://addons.mozilla.org/en-US/firefox/addon/open-tortoisesvn/ addon.
+
