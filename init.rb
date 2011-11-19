@@ -1,4 +1,6 @@
 require 'redmine'
+require "redmine_open_tortoise_svn_repository_view_hook"
+require "redmine_open_tortoise_svn_repository_wiki_patch"
 
 Redmine::Plugin.register :redmine_open_tortoise_svn do
   name 'Redmine Open TortoiseSVN plugin'

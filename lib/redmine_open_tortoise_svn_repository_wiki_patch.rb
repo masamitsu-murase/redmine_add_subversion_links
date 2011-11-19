@@ -16,17 +16,16 @@ module OpenTortoiseSvnWikiPatch
     def parse_redmine_links_with_open_tortoise_svn_link(text, project, obj, attr, only_path, options)
       text.gsub!(%r{([\s\(,\-\[\>]|^)(!)?(([a-z0-9\-]+):)?(attachment|document|version|commit|source|export|message|project)?((#|r)(\d+)|(:)([^"\s<>][^\s<>]*?|"[^"]+?"))(?=(?=[[:punct:]]\W)|,|\s|\]|<|$)}) do |m|
         leading, esc, project_prefix, project_identifier, prefix, sep, identifier = $1, $2, $3, $4, $5, $7 || $9, $8 || $10
-        link = nil
         if project_identifier
           project = Project.visible.find_by_identifier(project_identifier)
         end
-        if esc.nil?
-          if prefix.nil? && sep == 'r'
-            # project.changesets.visible raises an SQL error because of a double join on repositories
-            if project && project.repository && project.repository.scm_name == "Subversion" &&
-                (changeset = Changeset.visible.find_by_repository_id_and_revision(project.repository.id, identifier))
-              next m + " " + link_to("HOGE", project.repository.url, :rel => "tsvn[log][#{changeset.revision},#{changeset.revision}]")
-            end
+        if esc.nil? && prefix.nil? && sep == 'r'
+          # project.changesets.visible raises an SQL error because of a double join on repositories
+          if project && project.repository && project.repository.scm_name == "Subversion" &&
+              (changeset = Changeset.visible.find_by_repository_id_and_revision(project.repository.id, identifier))
+            rev = changeset.revision
+            next m + " " + link_to(image_tag("svn_icon.png", :plugin => "redmine_open_tortoise_svn"),
+                                   project.repository.url, :rel => "tsvn[log][#{rev},#{rev}]")
           end
         end
         next m
