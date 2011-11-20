@@ -2,6 +2,14 @@ h1. Redmine Open TortoiseSVN plugin
 
 h2. Overview
 
-This plugin adds links to Subversion repository.
-You can open TortoiseSVN directly if you use Firefox and you have installed "Open TortoiseSVN":https://addons.mozilla.org/en-US/firefox/addon/open-tortoisesvn/ addon.
+This plugin adds links to Subversion repository in the following pages.
+* Wiki pages
+  When you write a revision number in the specific format, such as "@r1234", in Wiki, Redmine automatically converts it to the link to the Redmine repository page.
+  This plugin adds external links to the original Subversion repository.
+* Log pages
+  This plugin also adds external links to the original Subversion repository in Redmine log pages, such as @http://redmine_url/projects/project_name/repository@.
+
+h2. Use with Open TortoiseSVN
+
+If you use "Open TortoiseSVN":https://addons.mozilla.org/en-US/firefox/addon/open-tortoisesvn or "Open TortoiseSVN for Google Chrome":https://chrome.google.com/webstore/detail/mhhincgnohhopnakokkcoifmnahapihn, added links open the TortoiseSVN log viewer of the specific revision automatically.
 
