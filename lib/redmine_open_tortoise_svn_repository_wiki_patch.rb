@@ -14,6 +14,7 @@ module OpenTortoiseSvnWikiPatch
   module InstanceMethod
     # refer to application_helper.rb
     def parse_redmine_links_with_open_tortoise_svn_link(text, project, obj, attr, only_path, options)
+      project_org = project
       text.gsub!(%r{([\s\(,\-\[\>]|^)(!)?(([a-z0-9\-]+):)?(attachment|document|version|commit|source|export|message|project)?((#|r)(\d+)|(:)([^"\s<>][^\s<>]*?|"[^"]+?"))(?=(?=[[:punct:]]\W)|,|\s|\]|<|$)}) do |m|
         leading, esc, project_prefix, project_identifier, prefix, sep, identifier = $1, $2, $3, $4, $5, $7 || $9, $8 || $10
         if project_identifier
@@ -31,7 +32,7 @@ module OpenTortoiseSvnWikiPatch
         next m
       end
 
-      parse_redmine_links_without_open_tortoise_svn_link(text, project, obj, attr, only_path, options)
+      parse_redmine_links_without_open_tortoise_svn_link(text, project_org, obj, attr, only_path, options)
     end
   end
 end
