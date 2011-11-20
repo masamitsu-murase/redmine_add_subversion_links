@@ -1,5 +1,8 @@
 
 // Current version of redmine uses Rails 2.3.x, so we can use prototype.js.
+/**
+ * Add links to Subversion repository.
+ */
 (function(){
     if (!gOpenTortoiseSvn || !gOpenTortoiseSvn.valid){
         return;
@@ -43,11 +46,15 @@
         }
 
         var form = forms[0];
-        var log_elem = createTortoiseSvnLinkTag(REPOSITORY_URL, null, null, "HOGE Compare");
-        form.appendChild(log_elem);
-
         var rev_items = form.select("td.checkbox input[name='rev']");
         var rev_to_items = form.select("td.checkbox input[name='rev_to']");
+        if (rev_items.length <= 1 || rev_to_items.length <= 1){
+            return;
+        }
+
+        var log_elem = createTortoiseSvnLinkTag(REPOSITORY_URL, null, null, "View Repository");
+        form.appendChild(log_elem);
+
         var set_log_elem_attr = function(event){
            // Set rel attribute to pass selected revision to Open TortoiseSVN addon.
             var rev = rev_items.find(function(elem){ return elem.checked; });
@@ -70,7 +77,12 @@
             elem.setAttribute(TSVN_ATTRIBUTE_NAME, tsvnAttribute(action, args));
         }
         if (typeof content == "string"){
-            content = document.createTextNode(content);
+            var span = document.createElement("span");
+            var style = "padding-left: 14px; background-image: url('" + SVN_IMAGE_PATH + "');" +
+                "background-repeat: no-repeat; background-position: center left;";
+            span.setAttribute("style", style);
+            span.appendChild(document.createTextNode(content));
+            content = span;
         }else if (!content){
             var img = document.createElement("img");
             img.setAttribute("src", SVN_IMAGE_PATH);
