@@ -8,6 +8,7 @@ module AddSubversionLinksApplicationHelperPatch
 
     base.class_eval do
       alias_method_chain :parse_redmine_links, :add_subversion_links
+      alias_method_chain :link_to_revision, :add_subversion_links
     end
   end
 
@@ -33,6 +34,17 @@ module AddSubversionLinksApplicationHelperPatch
       end
 
       parse_redmine_links_without_add_subversion_links(text, project_org, obj, attr, only_path, options)
+    end
+
+    def link_to_revision_with_add_subversion_links(revision, project, options={})
+      link = link_to_revision_without_add_subversion_links(revision, project, options)
+      if (revision && revision.revision && 
+          project && project.repository && project.repository.scm_name == "Subversion")
+        rev = revision.revision
+        link += " " + link_to(image_tag("svn_icon.png", :plugin => "redmine_add_subversion_links"),
+                              project.repository.url, :rel => "tsvn[log][#{rev},#{rev}]")
+      end
+      return link
     end
   end
 end
