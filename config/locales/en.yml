@@ -1,0 +1,4 @@
+
+en:
+  label_link_to_svn_repository: "Subversion Repository (Revision %{value})"
+

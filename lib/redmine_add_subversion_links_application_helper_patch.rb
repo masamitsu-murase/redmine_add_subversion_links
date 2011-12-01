@@ -27,7 +27,9 @@ module AddSubversionLinksApplicationHelperPatch
               (changeset = Changeset.visible.find_by_repository_id_and_revision(project.repository.id, identifier))
             rev = changeset.revision
             next m + " " + link_to(image_tag("svn_icon.png", :plugin => "redmine_add_subversion_links"),
-                                   project.repository.url, :rel => "tsvn[log][#{rev},#{rev}]")
+                                   project.repository.url,
+                                   :rel => "tsvn[log][#{rev},#{rev}]",
+                                   :title => l(:label_link_to_svn_repository, format_revision(rev)))
           end
         end
         next m
@@ -42,7 +44,9 @@ module AddSubversionLinksApplicationHelperPatch
           project && project.repository && project.repository.scm_name == "Subversion")
         rev = revision.revision
         link += " " + link_to(image_tag("svn_icon.png", :plugin => "redmine_add_subversion_links"),
-                              project.repository.url, :rel => "tsvn[log][#{rev},#{rev}]")
+                              project.repository.url,
+                              :rel => "tsvn[log][#{rev},#{rev}]",
+                              :title => l(:label_link_to_svn_repository, format_revision(rev)))
       end
       return link
     end
