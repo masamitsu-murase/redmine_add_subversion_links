@@ -31,7 +31,7 @@ module AddSubversionLinksApplicationHelperPatch
             # so it cannot be called in issues page.
             next m + " " + link_to(image_tag("svn_icon.png", :plugin => "redmine_add_subversion_links",
                                              :class => "add_subversion_links_icon"),
-                                   project.repository.url,
+                                   project.repository.url + "?p=#{rev}",
                                    :rel => "tsvn[log][#{rev},#{rev}]",
                                    :class => "add_subversion_links_icon",
                                    :title => l(:label_redmine_add_subversion_links_link_to_svn_repository,
@@ -51,7 +51,7 @@ module AddSubversionLinksApplicationHelperPatch
         rev = revision.revision
         link += " " + link_to(image_tag("svn_icon.png", :plugin => "redmine_add_subversion_links",
                                         :class => "add_subversion_links_icon"),
-                              project.repository.url,
+                              project.repository.url + "?p=#{rev}",
                               :rel => "tsvn[log][#{rev},#{rev}]",
                               :title => l(:label_redmine_add_subversion_links_link_to_svn_repository,
                                           format_revision(rev)))
