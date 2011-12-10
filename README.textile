@@ -1,18 +1,37 @@
-h1. Redmine Open TortoiseSVN plugin
+h1. Redmine Add Subversion Links plugin
 
 h2. Overview
 
 This plugin adds links to the original Subversion repository in the following pages.
 * Wiki pages
-  When you write a revision number in the specific format, such as "@r1234@", in Wiki, Redmine automatically converts it to the link to the Redmine's repository page.
+  Redmine automatically converts revision number, such as "@r1234@", to the link to the Redmine's repository page.
   This plugin adds external links to the original Subversion repository.
 * Log pages
-  This plugin also adds external links to the original Subversion repository in Redmine log pages, such as @http://redmine_url/projects/project_name/repository@.
+  This plugin also adds external links to the original Subversion repository in Redmine repository log pages.
 
 This plugin is more useful when you use it with *Open TortoiseSVN* add-on for Firefox and Google Chrome.
+You can open TortoiseSVN log viewer of the *targeted revision* easily!
 
 h2. Use this plugin with Open TortoiseSVN
 
 If client users use "Open TortoiseSVN for Firefox":https://addons.mozilla.org/en-US/firefox/addon/open-tortoisesvn or "Open TortoiseSVN for Google Chrome":https://chrome.google.com/webstore/detail/mhhincgnohhopnakokkcoifmnahapihn, they can open *TortoiseSVN log viewer* of the *specific revision* very easily.
 
 This server-side plugin and client-side "Open TortoiseSVN" add-on enables you to review and check source code easily!
+
+h2. Screen shots
+
+This plugin adds links to the subversion repository !https://github.com/masamitsu-murase/redmine_add_subversion_links/raw/master/resource/svn_icon.png! automatically as follows:
+* in Associated revisions
+!https://github.com/masamitsu-murase/redmine_add_subversion_links/raw/master/resource/issue_refs_part.png!
+* in Wiki
+!https://github.com/masamitsu-murase/redmine_add_subversion_links/raw/master/resource/issue_part.png!
+
+If you use "Open TortoiseSVN" add-on for Firefox or Google Chrome, TortoiseSVN log viewer is opened *automatically* when you click the link.
+*Only the specific log* is shown as follows.
+In this case, only revision 3 is shown.
+!https://github.com/masamitsu-murase/redmine_add_subversion_links/raw/master/resource/tortoise_log_part.png!
+
+h2. License
+
+You can use this plugin under the GPLv3.
+
