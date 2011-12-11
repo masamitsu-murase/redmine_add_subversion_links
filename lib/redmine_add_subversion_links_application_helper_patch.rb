@@ -9,6 +9,15 @@ module AddSubversionLinksApplicationHelperPatch
     base.class_eval do
       alias_method_chain :parse_redmine_links, :add_subversion_links
       alias_method_chain :link_to_revision, :add_subversion_links
+
+      # Note:
+      # Redmine::Hook::ViewListener includes ApplicationHelper 
+      # before this module is included by ApplicationHelper.
+      # Therefore, ViewListener's ancestor includes ApplicationHelper 
+      # but it does not includes this module.
+      # The following alias_method enables us to call link_to_original_subversion_repository
+      # in hook functions.
+      alias_method :link_to_original_subversion_repository, :def_link_to_original_subversion_repository
     end
   end
 
@@ -29,13 +38,7 @@ module AddSubversionLinksApplicationHelperPatch
             rev = changeset.revision
             # format_revision is defined in repositories_helper,
             # so it cannot be called in issues page.
-            next m + " " + link_to(image_tag("svn_icon.png", :plugin => "redmine_add_subversion_links",
-                                             :class => "add_subversion_links_icon"),
-                                   project.repository.url,
-                                   :rel => "tsvn[log][#{rev},#{rev}]",
-                                   :class => "add_subversion_links_icon",
-                                   :title => l(:label_redmine_add_subversion_links_link_to_svn_repository,
-                                               rev.to_s))
+            next m + " " + link_to_original_subversion_repository(project.repository.url, rev)
           end
         end
         next m
@@ -46,17 +49,28 @@ module AddSubversionLinksApplicationHelperPatch
 
     def link_to_revision_with_add_subversion_links(revision, project, options={})
       link = link_to_revision_without_add_subversion_links(revision, project, options)
-      if (revision && revision.revision && 
-          project && project.repository && project.repository.scm_name == "Subversion")
-        rev = revision.revision
-        link += " " + link_to(image_tag("svn_icon.png", :plugin => "redmine_add_subversion_links",
-                                        :class => "add_subversion_links_icon"),
-                              project.repository.url,
-                              :rel => "tsvn[log][#{rev},#{rev}]",
-                              :title => l(:label_redmine_add_subversion_links_link_to_svn_repository,
-                                          format_revision(rev)))
+      if (revision && project && 
+          project.repository && project.repository.scm_name == "Subversion")
+        rev = revision.respond_to?(:identifier) ? revision.identifier : revision
+        link += " " + link_to_original_subversion_repository(project.repository.url, rev)
       end
       return link
+    end
+
+    def def_link_to_original_subversion_repository(url, rev)
+      # Note:
+      # url_for is called in link_to method.
+      # Rails has two url_for methods, one is in url_helper.rb and the other is in url_rewriter.rb.
+      # url_for in url_helper.rb can accept raw URL address,
+      # but url_for in url_rewriter.rb cannot.
+      # Therefore, I use content_tag instead of link_to method.
+      return content_tag(:a, image_tag("svn_icon.png",
+                                       :plugin => "redmine_add_subversion_links",
+                                       :class => "add_subversion_links_icon"),
+                         :href => url,
+                         :rel => "tsvn[log][#{rev},#{rev}]",
+                         :title => l(:label_redmine_add_subversion_links_link_to_svn_repository,
+                                     rev.to_s))
     end
   end
 end
