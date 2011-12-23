@@ -69,6 +69,7 @@ module AddSubversionLinksApplicationHelperPatch
                                        :class => "add_subversion_links_icon"),
                          :href => url + "?p=#{rev}",
                          :rel => "tsvn[log][#{rev},#{rev}]",
+                         :class => "add_subversion_links_link",
                          :title => l(:label_redmine_add_subversion_links_link_to_svn_repository,
                                      rev.to_s))
     end
