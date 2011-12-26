@@ -8,6 +8,8 @@ This plugin adds links to the original Subversion repository in the following pa
   This plugin adds external links to the original Subversion repository.
 * Log pages
   This plugin also adds external links to the original Subversion repository in Redmine repository log pages.
+* Repository pages
+  This plugin also adds external links in Redmine repository pages.
 
 This plugin is more useful when you use it with *Open TortoiseSVN* add-on for Firefox and Google Chrome.
 You can open TortoiseSVN log viewer of the *targeted revision* easily!
