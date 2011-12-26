@@ -50,7 +50,8 @@ module AddSubversionLinksApplicationHelperPatch
     def link_to_revision_with_add_subversion_links(revision, project, options={})
       link = link_to_revision_without_add_subversion_links(revision, project, options)
       if (revision && project && 
-          project.repository && project.repository.scm_name == "Subversion")
+          project.repository && project.repository.scm_name == "Subversion" &&
+          User.current.allowed_to?({ :controller => "repositories", :action => "revisions" }, project))
         rev = revision.respond_to?(:identifier) ? revision.identifier : revision
         link += " " + link_to_original_subversion_repository(project.repository.url, rev)
       end

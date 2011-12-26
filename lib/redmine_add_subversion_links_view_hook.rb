@@ -21,11 +21,13 @@ EOS
   def view_layouts_base_html_head(context)
     # Show the original link and the icon for Subversion in a single line.
     css = DEFAULT_CSS
-    return css unless (context[:project] && context[:project].repository &&
-                       context[:project].repository.scm_name == "Subversion" &&
-                       context[:controller] && context[:controller].controller_name == "repositories")
+    proj = context[:project]
+    ctrl = context[:controller]
+    return css unless (proj && proj.repository && proj.repository.scm_name == "Subversion" &&
+                       ctrl && ctrl.controller_name == "repositories" &&
+                       User.current.allowed_to?({ :controller => "repositories", :action => "browse" }, proj))
 
-    repos = context[:project].repository
+    repos = proj.repository
     url = escape_javascript(repos.url.sub(/\/$/, ""))  # remove "/" suffix.
     icon_url = escape_javascript(image_path('svn_icon.png',
                                             :plugin => 'redmine_add_subversion_links'))
@@ -34,7 +36,7 @@ Event.observe(window, "load", function(){
     var param = {
       svn_root_url: "#{url}",
       svn_icon_url: "#{icon_url}",
-      action: "#{context[:controller].action_name}"
+      action: "#{ctrl.action_name}"
     };
     if (typeof(gAddSubversionLinksFuncs) == "object" && gAddSubversionLinksFuncs.onload){
         gAddSubversionLinksFuncs.onload(param);
