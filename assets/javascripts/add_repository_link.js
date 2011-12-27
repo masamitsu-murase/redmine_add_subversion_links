@@ -53,9 +53,13 @@ var gAddSubversionLinksFuncs = (function(){
     };
 
     var createRepositoryLinkElement = function(info, path, revision){
-        var param = { href: info.svn_root_url + "/" + path, "class": "add_subversion_links_link" };
+        var param = {
+            href: info.svn_root_url + "/" + path,
+            "class": "add_subversion_links_link",
+            rel: "tsvn[log]"
+        };
         if (revision){
-            param.rel = "tsvn[browser][" + revision + "]";
+            param.rel += "[" + revision + "," + revision + "]";
             param.href += "?" + Object.toQueryString({ p: revision });
         }
         var elem = new Element("a", param);
