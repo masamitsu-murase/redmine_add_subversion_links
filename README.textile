@@ -6,10 +6,8 @@ This plugin adds links to the original Subversion repository in the following pa
 * Wiki pages
   Redmine automatically converts revision number, such as "@r1234@", to the link to the Redmine's repository page.
   This plugin adds external links to the original Subversion repository.
-* Log pages
+* Log/Repository pages
   This plugin also adds external links to the original Subversion repository in Redmine repository log pages.
-* Repository pages
-  This plugin also adds external links in Redmine repository pages.
 
 This plugin is more useful when you use it with *Open TortoiseSVN* add-on for Firefox and Google Chrome.
 You can open TortoiseSVN log viewer of the *targeted revision* easily!
@@ -25,6 +23,8 @@ h2. Screen shots
 This plugin adds links to the subversion repository !https://github.com/masamitsu-murase/redmine_add_subversion_links/raw/master/resource/svn_icon.png! automatically as follows:
 * in Associated revisions
 !https://github.com/masamitsu-murase/redmine_add_subversion_links/raw/master/resource/issue_refs_part.png!
+* in Repository page
+!https://github.com/masamitsu-murase/redmine_add_subversion_links/raw/master/resource/repository.png!
 * in Wiki
 !https://github.com/masamitsu-murase/redmine_add_subversion_links/raw/master/resource/issue_part.png!
 
@@ -32,6 +32,10 @@ If you use "Open TortoiseSVN" add-on for Firefox or Google Chrome, TortoiseSVN l
 *Only the specific log* is shown as follows.
 In this case, only revision 3 is shown.
 !https://github.com/masamitsu-murase/redmine_add_subversion_links/raw/master/resource/tortoise_log_part.png!
+
+h2. Note
+
+This plugin shows users URLs of Subversion repository, so if you use it in public network, please be careful about access rights management of Subversion repository.
 
 h2. License
 

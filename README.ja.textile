@@ -1,0 +1,41 @@
+h1. Redmine Add Subversion Links plugin
+
+h2. 概要
+
+このプラグインは、Subversion リポジトリへのリンクを以下のページに付与します。
+* Wiki
+  Redmine では、 "@r1234@" のようなリビジョン番号は自動で Redmine のリポジトリのページのリンクに変換されます。
+  このプラグインは、外部の Subversion リポジトリへのリンクを追加します。
+* ログ/リポジトリページ
+  このプラグインは、 Redmine のログ、リポジトリの閲覧ページにも、外部の Subversion リポジトリへのリンクを追加します。
+
+Firefox や Google Chrome のアドオンである *Open TortoiseSVN* とともに使うと、より効果的です。
+このアドオンを使うと、 *目的のリビジョンだけを* TortoiseSVN で簡単に開くことができます。
+
+* "Open TortoiseSVN for Firefox":https://addons.mozilla.org/en-US/firefox/addon/open-tortoisesvn
+* "Open TortoiseSVN for Google Chrome":https://chrome.google.com/webstore/detail/mhhincgnohhopnakokkcoifmnahapihn
+
+h2. スクリーンショット
+
+このプラグインは、 Subversion リポジトリへのリンク !https://github.com/masamitsu-murase/redmine_add_subversion_links/raw/master/resource/svn_icon.png! を以下のように付与します。
+* 関連するリビジョン欄
+!https://github.com/masamitsu-murase/redmine_add_subversion_links/raw/master/resource/issue_refs_part.png!
+* リポジトリのページ
+!https://github.com/masamitsu-murase/redmine_add_subversion_links/raw/master/resource/repository.png!
+* Wiki
+!https://github.com/masamitsu-murase/redmine_add_subversion_links/raw/master/resource/issue_part.png!
+
+Firefox, Google Chrome の "Open TortoiseSVN" アドオンを使っている場合、リンクをクリックすると TortoiseSVN ログビューワが *自動で* 開きます。
+その際、 *特定のログだけが* 以下のように表示されます。
+この場合、リビジョン 3 だけが表示されています。
+!https://github.com/masamitsu-murase/redmine_add_subversion_links/raw/master/resource/tortoise_log_part.png!
+
+h2. 注意
+
+このプラグインを使うと、Subversion リポジトリの URL をユーザーに見せることになります。
+パブリックなネットワークで Redmine を運用されている場合は、 Subversion リポジトリのアクセス権管理にご注意ください。
+
+h2. ライセンス
+
+GPLv3 の元でお使いください。
+
