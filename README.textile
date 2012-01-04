@@ -41,3 +41,19 @@ h2. License
 
 You can use this plugin under the GPLv3.
 
+h2. Installation notes
+
+h3. Server-side settings
+
+# Put this plugin in @vendor/plugins/redmine_add_subversion_links@.
+  The directory name must be @redmine_add_subversion_links@.
+# Restart Redmine.
+  Migration is *not* needed because this plugin does not taint DB.
+
+h3. Client-side settings (optional)
+
+If you use "Open TortoiseSVN", please set up as follows.
+# Install "TortoiseSVN":http://tortoisesvn.tigris.org/.
+# Download the add-on, "Open TortoiseSVN for Firefox":https://addons.mozilla.org/en-US/firefox/addon/open-tortoisesvn or "Open TortoiseSVN for Google Chrome":https://chrome.google.com/webstore/detail/mhhincgnohhopnakokkcoifmnahapihn, and then install it to your browser.
+# Open settings window and set path of @TortoiseProc.exe@, and then add targeted Subversion repository URLs to Subversion repository list in settings window.
+
