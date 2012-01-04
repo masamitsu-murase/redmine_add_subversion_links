@@ -39,3 +39,19 @@ h2. ライセンス
 
 GPLv3 の元でお使いください。
 
+h2. インストール方法
+
+h3. サーバー側の設定
+
+# プラグインを @vendor/plugins/redmine_add_subversion_links@ に展開してください。
+  ディレクトリの名前は、必ず @redmine_add_subversion_links@ にしてください。
+# Redmine を再起動してください。
+  データベースにデータを保存したりしないので、マイグレーションは不要です。
+
+h3. クライアント側の設定 (オプショナル)
+
+もし "Open TortoiseSVN" アドオンを使われる場合は、以下のように設定してください。
+# "TortoiseSVN":http://tortoisesvn.tigris.org/ をインストールします。
+# "Open TortoiseSVN for Firefox":https://addons.mozilla.org/en-US/firefox/addon/open-tortoisesvn もしくは "Open TortoiseSVN for Google Chrome":https://chrome.google.com/webstore/detail/mhhincgnohhopnakokkcoifmnahapihn をダウンロードし、ブラウザにインストールしてください。
+# 設定画面を開き、 @TortoiseProc.exe@ のパスを設定し、対象となる Subversion リポジトリの URL を設定画面のリストに追加してください。
+
