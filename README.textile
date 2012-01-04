@@ -35,7 +35,7 @@ In this case, only revision 3 is shown.
 
 h2. Note
 
-This plugin shows users URLs of Subversion repository, so if you use it in public network, please be careful about access rights management of Subversion repository.
+This plugin shows users raw URLs of Subversion repository, so if you use it in public network, please be careful about access rights management of Subversion repository.
 
 h2. License
 
