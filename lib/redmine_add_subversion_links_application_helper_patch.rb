@@ -11,9 +11,9 @@ module AddSubversionLinksApplicationHelperPatch
       alias_method_chain :link_to_revision, :add_subversion_links
 
       # Note:
-      # Redmine::Hook::ViewListener includes ApplicationHelper 
+      # Redmine::Hook::ViewListener includes ApplicationHelper
       # before this module is included by ApplicationHelper.
-      # Therefore, ViewListener's ancestor includes ApplicationHelper 
+      # Therefore, ViewListener's ancestor includes ApplicationHelper
       # but it does not includes this module.
       # The following alias_method enables us to call link_to_original_subversion_repository
       # in hook functions.
@@ -26,19 +26,26 @@ module AddSubversionLinksApplicationHelperPatch
     # Regular expression is as same as the one defined in parse_redmine_links.
     def parse_redmine_links_with_add_subversion_links(text, project, obj, attr, only_path, options)
       project_org = project
-      text.gsub!(%r{([\s\(,\-\[\>]|^)(!)?(([a-z0-9\-]+):)?(attachment|document|version|commit|source|export|message|project)?((#|r)(\d+)|(:)([^"\s<>][^\s<>]*?|"[^"]+?"))(?=(?=[[:punct:]]\W)|,|\s|\]|<|$)}) do |m|
-        leading, esc, project_prefix, project_identifier, prefix, sep, identifier = $1, $2, $3, $4, $5, $7 || $9, $8 || $10
+      text.gsub!(%r{([\s\(,\-\[\>]|^)(!)?(([a-z0-9\-_]+):)?(attachment|document|version|forum|news|message|project|commit|source|export)?(((#)|((([a-z0-9\-]+)\|)?(r)))((\d+)((#note)?-(\d+))?)|(:)([^"\s<>][^\s<>]*?|"[^"]+?"))(?=(?=[[:punct:]][^A-Za-z0-9_/])|,|\s|\]|<|$)}) do |m|
+        leading, esc, project_prefix, project_identifier, prefix, repo_prefix, repo_identifier, sep, identifier, comment_suffix, comment_id = $1, $2, $3, $4, $5, $10, $11, $8 || $12 || $18, $14 || $19, $15, $17
+        link = nil
         if project_identifier
           project = Project.visible.find_by_identifier(project_identifier)
         end
         if esc.nil? && prefix.nil? && sep == 'r'
-          # project.changesets.visible raises an SQL error because of a double join on repositories
-          if project && project.repository && project.repository.scm_name == "Subversion" &&
-              (changeset = Changeset.visible.find_by_repository_id_and_revision(project.repository.id, identifier))
-            rev = changeset.revision
-            # format_revision is defined in repositories_helper,
-            # so it cannot be called in issues page.
-            next m + " " + link_to_original_subversion_repository(project.repository.url, rev)
+          if project
+            repository = nil
+            if repo_identifier
+              repository = project.repositories.detect {|repo| repo.identifier == repo_identifier}
+            else
+              repository = project.repository
+            end
+            # project.changesets.visible raises an SQL error because of a double join on repositories
+            if repository && repository.scm_name == "Subversion" &&
+                (changeset = Changeset.visible.find_by_repository_id_and_revision(repository.id, identifier))
+              rev = changeset.revision
+              next m  + " " + link_to_original_subversion_repository(repository.url, rev)
+            end
           end
         end
         next m
@@ -47,13 +54,16 @@ module AddSubversionLinksApplicationHelperPatch
       parse_redmine_links_without_add_subversion_links(text, project_org, obj, attr, only_path, options)
     end
 
-    def link_to_revision_with_add_subversion_links(revision, project, options={})
-      link = link_to_revision_without_add_subversion_links(revision, project, options)
-      if (revision && project && 
-          project.repository && project.repository.scm_name == "Subversion" &&
-          User.current.allowed_to?({ :controller => "repositories", :action => "revisions" }, project))
+    def link_to_revision_with_add_subversion_links(revision, repository, options={})
+      link = link_to_revision_without_add_subversion_links(revision, repository, options)
+
+      if (repository.is_a?(Project))
+        repository = repository.repository
+      end
+      if (revision && repository && repository.scm_name == "Subversion" &&
+          User.current.allowed_to?(:browse_repository, repository.project))
         rev = revision.respond_to?(:identifier) ? revision.identifier : revision
-        link += " " + link_to_original_subversion_repository(project.repository.url, rev)
+        link += " " + link_to_original_subversion_repository(repository.url, rev)
       end
       return link
     end

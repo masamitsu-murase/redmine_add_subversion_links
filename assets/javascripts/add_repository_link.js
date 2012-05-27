@@ -13,7 +13,7 @@ var gAddSubversionLinksFuncs = (function(){
 
     var addRepositoryLinkInRepositoryPage = function(info, links){
         // This pattern depends on the parameter structure of "repository controller".
-        var href_pattern = new RegExp("/projects/[^/]+/repository/(revisions/([0-9]+)/)?(changes|show|entry)/([^#&?]*)(\\?[^#]+)?");
+        var href_pattern = new RegExp("/projects/[^/]+/repository/([a-z0-9\-]+/)?(revisions/([0-9]+)/)?(changes|show|entry)/([^#&?]*)(\\?[^#]+)?");
         links.forEach(function(link){
             var href = link.getAttribute("href");
             if (!href){
@@ -25,10 +25,10 @@ var gAddSubversionLinksFuncs = (function(){
                 return;
             }
 
-            var path = match_data[4];
+            var path = match_data[5];
             var revision = null;
-            if (match_data[1]){
-                revision = match_data[2];
+            if (match_data[2]){
+                revision = match_data[3];
             }
             // var params = href.toQueryParams();
             var repos_link_elem = createRepositoryLinkElement(info, path, revision);

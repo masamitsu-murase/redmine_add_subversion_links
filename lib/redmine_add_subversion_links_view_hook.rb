@@ -23,11 +23,17 @@ EOS
     css = DEFAULT_CSS
     proj = context[:project]
     ctrl = context[:controller]
-    return css unless (proj && proj.repository && proj.repository.scm_name == "Subversion" &&
-                       ctrl && ctrl.controller_name == "repositories" &&
-                       User.current.allowed_to?({ :controller => "repositories", :action => "browse" }, proj))
+    return css unless (proj && ctrl && ctrl.controller_name == "repositories" &&
+      User.current.allowed_to?(:browse_repository, proj))
 
-    repos = proj.repository
+    repo_id = ctrl.params[:repository_id]
+    if (repo_id)
+      repos = proj.repositories.detect{ |repo| repo.identifier == repo_id }
+    else
+      repos = proj.repository
+    end
+    return css unless (repos && repos.scm_name == "Subversion")
+
     url = escape_javascript(repos.url.sub(/\/$/, ""))  # remove "/" suffix.
     icon_url = escape_javascript(image_path('svn_icon.png',
                                             :plugin => 'redmine_add_subversion_links'))
