@@ -35,13 +35,14 @@ EOS
     return css unless (repos && repos.scm_name == "Subversion")
 
     url = escape_javascript(repos.url.sub(/\/$/, ""))  # remove "/" suffix.
-    icon_url = escape_javascript(image_path('svn_icon.png',
-                                            :plugin => 'redmine_add_subversion_links'))
+    icon_image_tag = escape_javascript(image_tag("svn_icon.png",
+                                             :plugin => "redmine_add_subversion_links",
+                                             :class => "add_subversion_links_icon"))
     js = <<"EOS"
 Event.observe(window, "load", function(){
     var param = {
       svn_root_url: "#{url}",
-      svn_icon_url: "#{icon_url}",
+      svn_icon_image_tag: "#{icon_image_tag}",
       action: "#{ctrl.action_name}"
     };
     if (typeof(gAddSubversionLinksFuncs) == "object" && gAddSubversionLinksFuncs.onload){

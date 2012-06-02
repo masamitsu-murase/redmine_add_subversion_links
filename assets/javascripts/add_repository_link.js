@@ -63,10 +63,7 @@ var gAddSubversionLinksFuncs = (function(){
             param.href += "?" + Object.toQueryString({ p: revision });
         }
         var elem = new Element("a", param);
-        elem.update(new Element("img", {
-            src: info.svn_icon_url, alt: "svn",
-            "class": "add_subversion_links_icon"
-        }));
+        elem.update(info.svn_icon_image_tag);
         return elem;
     };
 

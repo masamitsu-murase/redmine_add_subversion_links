@@ -63,7 +63,7 @@ module AddSubversionLinksApplicationHelperPatch
       if (revision && repository && repository.scm_name == "Subversion" &&
           User.current.allowed_to?(:browse_repository, repository.project))
         rev = revision.respond_to?(:identifier) ? revision.identifier : revision
-        link += " " + link_to_original_subversion_repository(repository.url, rev)
+        link += " ".html_safe + link_to_original_subversion_repository(repository.url, rev)
       end
       return link
     end
