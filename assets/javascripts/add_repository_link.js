@@ -1,55 +1,88 @@
 
 var gAddSubversionLinksFuncs = (function(){
+    var $ = jQuery;
+
     // "onload" should be called only when Subversion repository page is shown.
     var onload = function(info){
         if (info.action == "show"){
-            addRepositoryLinkInRepositoryPage(info, $$("table#browser tbody tr > td.filename:first-child a.icon"));
+            addRepositoryLinkInRepositoryPage(info, $("table#browser tbody tr > td.filename:first-child a.icon"));
             // To update Ajax elements
-            patchScmEntryLoaded(info);
+            addAjaxEventHandler(info);
         }else if (info.action == "revision"){
-            addRepositoryLinkInRepositoryPage(info, $$("div.changeset-changes li.change a:first-child"));
+            addRepositoryLinkInRepositoryPage(info, $("div.changeset-changes li.change a:first-child"));
         }
     };
 
-    var addRepositoryLinkInRepositoryPage = function(info, links){
+    var parseScmUrl = function(url){
         // This pattern depends on the parameter structure of "repository controller".
-        var href_pattern = new RegExp("/projects/[^/]+/repository/([a-z0-9\-]+/)?(revisions/([0-9]+)/)?(changes|show|entry)/([^#&?]*)(\\?[^#]+)?");
-        links.forEach(function(link){
+        var scm_url_pattern = new RegExp("/projects/[^/]+/repository/([_a-z0-9\\-]+/)?(revisions/([0-9]+)/)?(changes|show|entry)/([^#&?]*)(\\?[^#]+)?");
+
+        if (!url){
+            return null;
+        }
+
+        var match_data = url.match(scm_url_pattern);
+        if (!match_data){
+            return null;
+        }
+
+        var obj = {
+            path: match_data[5]
+        };
+        if (match_data[2] && match_data[3]){
+            obj.revision = match_data[3];
+        }
+
+        var param_str = match_data[6];
+        if (param_str){
+            match_data = param_str.match(/parent_id=([0-9a-f]+)/);
+            if (match_data){
+                obj.parent_id = match_data[1];
+            }
+            match_data = param_str.match(/rev=([0-9]+)/);
+            if (match_data){
+                obj.revision = match_data[1];
+            }
+        }
+
+        return obj;
+    };
+
+    var addRepositoryLinkInRepositoryPage = function(info, links){
+        links.each(function(){
+            var link = this;
+
             var href = link.getAttribute("href");
             if (!href){
                 return;
             }
 
-            var match_data = href.match(href_pattern);
-            if (!match_data){
+            var scm_info = parseScmUrl(href);
+            if (!scm_info){
                 return;
             }
 
-            var path = match_data[5];
-            var revision = null;
-            if (match_data[2]){
-                revision = match_data[3];
-            }
-            // var params = href.toQueryParams();
-            var repos_link_elem = createRepositoryLinkElement(info, path, revision);
-            link.parentNode.appendChild(repos_link_elem);
+            var repos_link_elem = createRepositoryLinkElement(info, scm_info.path, scm_info.revision);
+            $(link).after(repos_link_elem);
         });
     };
 
-    var patchScmEntryLoaded = function(info){
+    var addAjaxEventHandler = function(info){
         // This function depends on application.js.
-        // If you would like to know the detail about function declaration of JavaScript,
-        // please refer to https://developer.mozilla.org/en/JavaScript/Reference/Functions_and_function_scope#Function_constructor_vs._function_declaration_vs._function_expression.
-        if (typeof(scmEntryLoaded) != "function"){
-            return;
-        }
+        $("#browser").ajaxSuccess(function(e, xhr, option){
+            var url = option.url;
+            if (typeof(url) != "string" || !url){
+                return;
+            }
 
-        var scmEntryLoaded_without_add_subversion_links = scmEntryLoaded;
-        scmEntryLoaded = function(id){
-            var condition = "table#browser tbody tr." + id + " > td.filename:first-child a.icon";
-            setTimeout(function(){ addRepositoryLinkInRepositoryPage(info, $$(condition)); }, 0);
-            return scmEntryLoaded_without_add_subversion_links(id);
-        };
+            var scm_info = parseScmUrl(url);
+            if (!scm_info || !(scm_info.parent_id)){
+                return;
+            }
+
+            var condition = "#browser tbody tr." + scm_info.parent_id + " > td.filename:first-child a.icon";
+            addRepositoryLinkInRepositoryPage(info, $(condition));
+        });
     };
 
     var createRepositoryLinkElement = function(info, path, revision){
@@ -60,11 +93,14 @@ var gAddSubversionLinksFuncs = (function(){
         };
         if (revision){
             param.rel += "[" + revision + "," + revision + "]";
-            param.href += "?" + Object.toQueryString({ p: revision });
+            param.href += "?" + $.param({ p: revision });
         }
-        var elem = new Element("a", param);
-        elem.update(info.svn_icon_image_tag);
-        return elem;
+        var elem = $("<a />");
+        elem.html(info.svn_icon_image_tag);
+        for (var key in param){
+            elem.attr(key, param[key]);
+        }
+        return elem.get(0);
     };
 
     return {

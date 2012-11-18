@@ -39,15 +39,15 @@ EOS
                                              :plugin => "redmine_add_subversion_links",
                                              :class => "add_subversion_links_icon"))
     js = <<"EOS"
-Event.observe(window, "load", function(){
-    var param = {
-      svn_root_url: "#{url}",
-      svn_icon_image_tag: "#{icon_image_tag}",
-      action: "#{ctrl.action_name}"
-    };
-    if (typeof(gAddSubversionLinksFuncs) == "object" && gAddSubversionLinksFuncs.onload){
-        gAddSubversionLinksFuncs.onload(param);
-    }
+jQuery(function($, undefined){
+  var param = {
+    svn_root_url: "#{url}",
+    svn_icon_image_tag: "#{icon_image_tag}",
+    action: "#{ctrl.action_name}"
+  };
+  if (typeof(gAddSubversionLinksFuncs) == "object" && gAddSubversionLinksFuncs.onload){
+    gAddSubversionLinksFuncs.onload(param);
+  }
 });
 EOS
     return css + javascript_tag(js) +
