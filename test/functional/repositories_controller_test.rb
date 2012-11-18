@@ -30,7 +30,7 @@ class RepositoriesControllerTest < ActionController::TestCase
     svn_dump_path = "#{Rails.root.expand_path}/test/fixtures/repositories/subversion_repository.dump.gz"
 
     [ SVN_REPO_PATH, SUB_SVN_REPO_PATH ].each do |path|
-      railse "#{path} exists!" if (File.exists?(path))
+      raise "#{path} exists!" if (File.exists?(path))
 
       my_system("svnadmin create #{path}")
       my_system("gunzip < #{svn_dump_path} | svnadmin load #{path}")
