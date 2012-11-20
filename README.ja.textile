@@ -15,7 +15,9 @@ Firefox や Google Chrome のアドオンである *Open TortoiseSVN* ととも�
 * "Open TortoiseSVN for Firefox":https://addons.mozilla.org/en-US/firefox/addon/open-tortoisesvn
 * "Open TortoiseSVN for Google Chrome":https://chrome.google.com/webstore/detail/mhhincgnohhopnakokkcoifmnahapihn
 
-最新版は "Redmine プラグインのページ":http://www.redmine.org/plugins/add_subversion_links からダウンロードできます。
+h2. ダウンロード
+
+このプラグインの最新版は "Redmine プラグインのページ":http://www.redmine.org/plugins/add_subversion_links からダウンロードできます。
 
 h2. スクリーンショット
 
