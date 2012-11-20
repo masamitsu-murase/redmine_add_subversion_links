@@ -43,8 +43,9 @@ h2. インストール方法
 
 h3. サーバー側の設定
 
-# プラグインを @vendor/plugins/redmine_add_subversion_links@ に展開してください。
+# プラグインを @plugins/redmine_add_subversion_links@ に展開してください。
   ディレクトリの名前は、必ず @redmine_add_subversion_links@ にしてください。
+  Redmine 2.0.0 以前は @vendor/plugins/redmine_add_subversion_links@ に展開してください。
 # Redmine を再起動してください。
   データベースにデータを保存したりしないので、マイグレーションは不要です。
 
