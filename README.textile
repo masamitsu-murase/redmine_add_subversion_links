@@ -12,6 +12,8 @@ This plugin adds links to the original Subversion repository in the following pa
 This plugin is more useful when you use it with *Open TortoiseSVN* add-on for Firefox and Google Chrome.
 You can open TortoiseSVN log viewer of the *targeted revision* easily!
 
+You can download the latest version in "Redmine plugin page":http://www.redmine.org/plugins/add_subversion_links .
+
 h2. Use this plugin with Open TortoiseSVN
 
 If client users use "Open TortoiseSVN for Firefox":https://addons.mozilla.org/en-US/firefox/addon/open-tortoisesvn or "Open TortoiseSVN for Google Chrome":https://chrome.google.com/webstore/detail/mhhincgnohhopnakokkcoifmnahapihn, they can open *TortoiseSVN log viewer* of the *specific revision* very easily.
