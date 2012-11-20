@@ -8,5 +8,5 @@ Redmine::Plugin.register :redmine_add_subversion_links do
   description 'This is a plugin for Redmine to add Subversion links to the repository.'
   version '0.2.0'
   url 'https://github.com/masamitsu-murase/redmine_add_subversion_links'
-  author_url 'http://masamitsu-murase.blogspot.com'
+  author_url 'http://masamitsu-murase.blogspot.jp'
 end
