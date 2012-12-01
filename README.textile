@@ -43,7 +43,7 @@ This plugin shows users raw URLs of Subversion repository, so if you use it in p
 
 h2. License
 
-You can use this plugin under the GPLv3.
+You can use this plugin under the "GPLv3":http://www.gnu.org/licenses/gpl-3.0.txt .
 
 h2. Installation notes
 
@@ -61,4 +61,10 @@ If you use "Open TortoiseSVN", please set up as follows.
 # Install "TortoiseSVN":http://tortoisesvn.tigris.org/.
 # Download the add-on, "Open TortoiseSVN for Firefox":https://addons.mozilla.org/en-US/firefox/addon/open-tortoisesvn or "Open TortoiseSVN for Google Chrome":https://chrome.google.com/webstore/detail/mhhincgnohhopnakokkcoifmnahapihn, and then install it to your browser.
 # Open settings window and set path of @TortoiseProc.exe@, and then add targeted Subversion repository URLs to Subversion repository list in settings window.
+
+h2. Donation
+
+If you would like to say thanks, please feel free to send me a mail and to make a donation :-)
+
+!http://www.pledgie.com/campaigns/18833.png?skin_name=chrome(Click here to lend your support to Add Subversion Links - Redmine plugin and make a donation at www.pledgie.com)!:http://www.pledgie.com/campaigns/18833
 
