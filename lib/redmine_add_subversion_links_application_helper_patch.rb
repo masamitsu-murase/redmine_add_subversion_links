@@ -87,8 +87,12 @@ module AddSubversionLinksApplicationHelperPatch
       if (revision && repository && repository.scm_name == "Subversion" &&
           User.current.allowed_to?(:browse_repository, repository.project))
         rev = revision.respond_to?(:identifier) ? revision.identifier : revision
-        changeset = Changeset.visible.find_by_repository_id_and_revision(repository.id, rev)
-        url = add_subversion_links_root_url_of_changesets(repository, changeset)
+        if (controller_name == "issues")
+          changeset = Changeset.visible.find_by_repository_id_and_revision(repository.id, rev)
+          url = add_subversion_links_root_url_of_changesets(repository, changeset)
+        else
+          url = repository.url
+        end
         link += " ".html_safe + link_to_original_subversion_repository(url, rev)
       end
       return link
@@ -98,20 +102,21 @@ module AddSubversionLinksApplicationHelperPatch
       path_str = ""
       begin
         if (changeset)
-          filechanges = changeset.filechanges
-          if (filechanges && filechanges.size > 0)
+          filechanges = changeset.filechanges.select{ |fc| fc.action != 'D' }
+          if (filechanges.size > 0)
             path = repository.relative_path(filechanges.first.path).split("/")
             filechanges.drop(1).each do |fc|
               path = path.zip(repository.relative_path(fc.path).split("/")).take_while{ |a,b| a==b }.map(&:first)
             end
             path_str = path.join("/")
+            path_str = "/" + path_str if (path_str[0] && path_str[0] != "/")
           end
         end
       rescue
         path_str = ""
       end
 
-      return repository.url + path_str
+      return repository.url.sub(/\/$/, "") + path_str
     end
 
     def def_link_to_original_subversion_repository(url, rev)

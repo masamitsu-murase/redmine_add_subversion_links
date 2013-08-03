@@ -15,7 +15,7 @@ var gAddSubversionLinksFuncs = (function(){
 
     var parseScmUrl = function(url){
         // This pattern depends on the parameter structure of "repository controller".
-        var scm_url_pattern = new RegExp("/projects/[^/]+/repository/([_a-z0-9\\-]+/)?(revisions/([0-9]+)/)?(changes|show|entry)/([^#&?]*)(\\?[^#]+)?");
+        var scm_url_pattern = new RegExp("/projects/[^/]+/repository/([_a-zA-Z0-9\\-]+/)?(revisions/([0-9]+)/)?(changes|show|entry)(/([^#&?]*))?(\\?[^#]+)?");
 
         if (!url){
             return null;
@@ -27,13 +27,13 @@ var gAddSubversionLinksFuncs = (function(){
         }
 
         var obj = {
-            path: match_data[5]
+            path: (match_data[6] || "")
         };
         if (match_data[2] && match_data[3]){
             obj.revision = match_data[3];
         }
 
-        var param_str = match_data[6];
+        var param_str = match_data[7];
         if (param_str){
             match_data = param_str.match(/parent_id=([0-9a-f]+)/);
             if (match_data){
@@ -50,9 +50,9 @@ var gAddSubversionLinksFuncs = (function(){
 
     var addRepositoryLinkInRepositoryPage = function(info, links){
         links.each(function(){
-            var link = this;
+            var link = $(this);
 
-            var href = link.getAttribute("href");
+            var href = link.attr("href");
             if (!href){
                 return;
             }
@@ -63,7 +63,7 @@ var gAddSubversionLinksFuncs = (function(){
             }
 
             var repos_link_elem = createRepositoryLinkElement(info, scm_info.path, scm_info.revision);
-            $(link).after(repos_link_elem);
+            link.after(repos_link_elem);
         });
     };
 
