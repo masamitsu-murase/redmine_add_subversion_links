@@ -1,4 +1,5 @@
 
 en:
-  label_redmine_add_subversion_links_link_to_svn_repository: "Subversion Repository (Revision %{value})"
+  label_redmine_add_subversion_links_link_to_svn_repository_with_revision: "Subversion Repository (Revision %{value})"
+  label_redmine_add_subversion_links_link_to_svn_repository: "Subversion Repository"
 

@@ -28,26 +28,49 @@ module AddSubversionLinksApplicationHelperPatch
       project_org = project
       text.gsub!(%r{([\s\(,\-\[\>]|^)(!)?(([a-z0-9\-_]+):)?(attachment|document|version|forum|news|message|project|commit|source|export)?(((#)|((([a-z0-9\-_]+)\|)?(r)))((\d+)((#note)?-(\d+))?)|(:)([^"\s<>][^\s<>]*?|"[^"]+?"))(?=(?=[[:punct:]][^A-Za-z0-9_/])|,|\s|\]|<|$)}) do |m|
         leading, esc, project_prefix, project_identifier, prefix, repo_prefix, repo_identifier, sep, identifier, comment_suffix, comment_id = $1, $2, $3, $4, $5, $10, $11, $8 || $12 || $18, $14 || $19, $15, $17
-        link = nil
-        if project_identifier
-          project = Project.visible.find_by_identifier(project_identifier)
-        end
-        if esc.nil? && prefix.nil? && sep == 'r'
-          if project
-            repository = nil
-            if repo_identifier
-              repository = project.repositories.detect {|repo| repo.identifier == repo_identifier}
-            else
-              repository = project.repository
+        begin
+          if project_identifier
+            project = Project.visible.find_by_identifier(project_identifier)
+          end
+          if esc.nil? && prefix.nil? && sep == 'r'
+            if project
+              repository = nil
+              if repo_identifier
+                repository = project.repositories.detect {|repo| repo.identifier == repo_identifier}
+              else
+                repository = project.repository
+              end
+              # project.changesets.visible raises an SQL error because of a double join on repositories
+              if repository && repository.scm_name == "Subversion" &&
+                  (changeset = Changeset.visible.find_by_repository_id_and_revision(repository.id, identifier))
+                rev = changeset.revision
+                url = add_subversion_links_root_url_of_changesets(repository, changeset)
+                next m  + " " + link_to_original_subversion_repository(url, rev)
+              end
             end
-            # project.changesets.visible raises an SQL error because of a double join on repositories
-            if repository && repository.scm_name == "Subversion" &&
-                (changeset = Changeset.visible.find_by_repository_id_and_revision(repository.id, identifier))
-              rev = changeset.revision
-              url = add_subversion_links_root_url_of_changesets(repository, changeset)
-              next m  + " " + link_to_original_subversion_repository(url, rev)
+          elsif sep == ':'
+            # removes the double quotes if any
+            name = identifier.gsub(%r{^"(.*)"$}, "\\1")
+            if prefix == 'source'
+              if project
+                repository = nil
+                if name =~ %r{^(([a-z0-9\-_]+)\|)(.+)$}
+                  repo_prefix, repo_identifier, name = $1, $2, $3
+                  repository = project.repositories.detect {|repo| repo.identifier == repo_identifier}
+                else
+                  repository = project.repository
+                end
+                if repository && repository.scm_name == 'Subversion' &&
+                    User.current.allowed_to?(:browse_repository, project)
+                  name =~ %r{^[/\\]*(.*?)(@([^/\\@]+?))?(#(L\d+))?$}
+                  path, rev, anchor = $1, $3, $5
+                  url = repository.url.sub(/\/$/, "") + "/#{to_path_param(path)}"
+                  next m + " " + link_to_original_subversion_repository(url, rev)
+                end
+              end
             end
           end
+        rescue
         end
         next m
       end
@@ -98,14 +121,21 @@ module AddSubversionLinksApplicationHelperPatch
       # url_for in url_helper.rb can accept raw URL address,
       # but url_for in url_rewriter.rb cannot.
       # Therefore, I use content_tag instead of link_to method.
+      param = {
+        :href => url,
+        :rel => "tsvn[log]",
+        :class => "add_subversion_links_link",
+        :title => l(:label_redmine_add_subversion_links_link_to_svn_repository)
+      }
+      if (rev && !(rev.blank?))
+        param[:href] += "?p=#{rev}"
+        param[:rel] += "[#{rev},#{rev}]"
+        param[:title] = l(:label_redmine_add_subversion_links_link_to_svn_repository_with_revision, rev)
+      end
       return content_tag(:a, image_tag("svn_icon.png",
                                        :plugin => "redmine_add_subversion_links",
                                        :class => "add_subversion_links_icon"),
-                         :href => url + "?p=#{rev}",
-                         :rel => "tsvn[log][#{rev},#{rev}]",
-                         :class => "add_subversion_links_link",
-                         :title => l(:label_redmine_add_subversion_links_link_to_svn_repository,
-                                     rev.to_s))
+                     param)
     end
   end
 end

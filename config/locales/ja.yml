@@ -1,4 +1,5 @@
 
 ja:
-  label_redmine_add_subversion_links_link_to_svn_repository: "Subversionリポジトリ (リビジョン %{value})"
+  label_redmine_add_subversion_links_link_to_svn_repository_with_revision: "Subversionリポジトリ (リビジョン %{value})"
+  label_redmine_add_subversion_links_link_to_svn_repository: "Subversionリポジトリ"
 
