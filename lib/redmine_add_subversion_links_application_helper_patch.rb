@@ -1,4 +1,4 @@
-# coding: UTF-8
+# -*- coding: utf-8 -*-
 
 require_dependency("application_helper")
 
@@ -26,7 +26,7 @@ module AddSubversionLinksApplicationHelperPatch
     # Regular expression is as same as the one defined in parse_redmine_links.
     def parse_redmine_links_with_add_subversion_links(text, project, obj, attr, only_path, options)
       project_org = project
-      text.gsub!(%r{([\s\(,\-\[\>]|^)(!)?(([a-z0-9\-_]+):)?(attachment|document|version|forum|news|message|project|commit|source|export)?(((#)|((([a-z0-9\-]+)\|)?(r)))((\d+)((#note)?-(\d+))?)|(:)([^"\s<>][^\s<>]*?|"[^"]+?"))(?=(?=[[:punct:]][^A-Za-z0-9_/])|,|\s|\]|<|$)}) do |m|
+      text.gsub!(%r{([\s\(,\-\[\>]|^)(!)?(([a-z0-9\-_]+):)?(attachment|document|version|forum|news|message|project|commit|source|export)?(((#)|((([a-z0-9\-_]+)\|)?(r)))((\d+)((#note)?-(\d+))?)|(:)([^"\s<>][^\s<>]*?|"[^"]+?"))(?=(?=[[:punct:]][^A-Za-z0-9_/])|,|\s|\]|<|$)}) do |m|
         leading, esc, project_prefix, project_identifier, prefix, repo_prefix, repo_identifier, sep, identifier, comment_suffix, comment_id = $1, $2, $3, $4, $5, $10, $11, $8 || $12 || $18, $14 || $19, $15, $17
         link = nil
         if project_identifier
@@ -44,7 +44,8 @@ module AddSubversionLinksApplicationHelperPatch
             if repository && repository.scm_name == "Subversion" &&
                 (changeset = Changeset.visible.find_by_repository_id_and_revision(repository.id, identifier))
               rev = changeset.revision
-              next m  + " " + link_to_original_subversion_repository(repository.url, rev)
+              url = add_subversion_links_root_url_of_changesets(repository, changeset)
+              next m  + " " + link_to_original_subversion_repository(url, rev)
             end
           end
         end
@@ -63,9 +64,31 @@ module AddSubversionLinksApplicationHelperPatch
       if (revision && repository && repository.scm_name == "Subversion" &&
           User.current.allowed_to?(:browse_repository, repository.project))
         rev = revision.respond_to?(:identifier) ? revision.identifier : revision
-        link += " ".html_safe + link_to_original_subversion_repository(repository.url, rev)
+        changeset = Changeset.visible.find_by_repository_id_and_revision(repository.id, rev)
+        url = add_subversion_links_root_url_of_changesets(repository, changeset)
+        link += " ".html_safe + link_to_original_subversion_repository(url, rev)
       end
       return link
+    end
+
+    def add_subversion_links_root_url_of_changesets(repository, changeset)
+      path_str = ""
+      begin
+        if (changeset)
+          filechanges = changeset.filechanges
+          if (filechanges && filechanges.size > 0)
+            path = repository.relative_path(filechanges.first.path).split("/")
+            filechanges.drop(1).each do |fc|
+              path = path.zip(repository.relative_path(fc.path).split("/")).take_while{ |a,b| a==b }.map(&:first)
+            end
+            path_str = path.join("/")
+          end
+        end
+      rescue
+        path_str = ""
+      end
+
+      return repository.url + path_str
     end
 
     def def_link_to_original_subversion_repository(url, rev)
