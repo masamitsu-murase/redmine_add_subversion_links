@@ -1,5 +1,6 @@
 
-require("fileutils")
+require "fileutils"
+require "zlib"
 require(File.expand_path("../../test_helper", __FILE__))
 
 class RepositoriesControllerTest < ActionController::TestCase
@@ -12,18 +13,18 @@ class RepositoriesControllerTest < ActionController::TestCase
   PRJ_ID = 3
 
   SVN_REPO_PATH = "#{Rails.root.expand_path}/tmp/test/subversion_repository"
-  SVN_REPO_URL = "file://#{SVN_REPO_PATH}"
+  SVN_REPO_URL = "file:///#{SVN_REPO_PATH.sub('^/', '')}"
 
   SUB_SVN_REPO_PATH = "#{Rails.root.expand_path}/tmp/test/sub_subversion_repository"
-  SUB_SVN_REPO_URL = "file://#{SUB_SVN_REPO_PATH}"
+  SUB_SVN_REPO_URL = "file:///#{SUB_SVN_REPO_PATH.sub('^/', '')}"
   SUB_SVN_ID = "sub_svn"
 
   GIT_REPO_PARENT_PATH = "#{Rails.root.expand_path}/tmp/test/git"
   SUB_GIT_ID = "sub_git"
 
   def my_system(str)
-    `#{str}`
-    raise "Failed to execute: #{str}" if ($?.exitstatus != 0)
+    result = system(*str, out: File::NULL, err: File::NULL)
+    raise "Failed to execute: #{str}" unless result
   end
 
   def prepare_svn_repos_db
@@ -32,8 +33,12 @@ class RepositoriesControllerTest < ActionController::TestCase
     [ SVN_REPO_PATH, SUB_SVN_REPO_PATH ].each do |path|
       raise "#{path} exists!" if (File.exists?(path))
 
-      my_system("svnadmin create #{path}")
-      my_system("gunzip < #{svn_dump_path} | svnadmin load #{path}")
+      my_system(["svnadmin", "create", path])
+      Zlib::GzipReader.open(svn_dump_path) do |gz|
+        IO.popen(["svnadmin", "load", path], "wb", out: File::NULL, err: File::NULL) do |io|
+          FileUtils.copy_stream(gz, io)
+        end
+      end
     end
   end
 
@@ -50,7 +55,7 @@ class RepositoriesControllerTest < ActionController::TestCase
 
     FileUtils.mkpath(GIT_REPO_PARENT_PATH)
     git_gz_path = "#{Rails.root.expand_path}/test/fixtures/repositories/git_repository.tar.gz"
-    my_system("tar xzf #{git_gz_path} -C #{GIT_REPO_PARENT_PATH}")
+    my_system(["tar xzf #{git_gz_path} -C #{GIT_REPO_PARENT_PATH}"])
   end
 
   def cleanup_git_db
