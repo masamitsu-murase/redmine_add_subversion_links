@@ -148,7 +148,7 @@ module AddSubversionLinksApplicationHelperPatch
         :title => l(:label_redmine_add_subversion_links_link_to_svn_repository)
       }
       if (rev && !(rev.blank?))
-        # param[:href] += "?p=#{rev}"
+        param[:href] += "?p=#{rev}"
         param[:"data-tsvn-info"] += "[#{rev},#{rev}]"
         param[:title] = l(:label_redmine_add_subversion_links_link_to_svn_repository_with_revision, rev)
       end
