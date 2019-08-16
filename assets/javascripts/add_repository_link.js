@@ -69,7 +69,7 @@ var gAddSubversionLinksFuncs = (function () {
 
     var addAjaxEventHandler = function (info) {
         // This function depends on application.js.
-        $("#browser").ajaxSuccess(function (e, xhr, option) {
+        $(document).ajaxSuccess(function (e, xhr, option) {
             var url = option.url;
             if (typeof (url) != "string" || !url) {
                 return;
