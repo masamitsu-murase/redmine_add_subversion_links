@@ -87,13 +87,13 @@ var gAddSubversionLinksFuncs = (function () {
 
     var createRepositoryLinkElement = function (info, path, revision) {
         var param = {
-            href: info.svn_root_url + "/" + path,
+            "href": info.svn_root_url + "/" + path,
             "class": "add_subversion_links_link",
-            "data-tsvn-info": "tsvn[log]"
+            "data-tsvn-info": "tsvn[browser]"
         };
         if (revision) {
-            param["data-tsvn-info"] += "[" + revision + "," + revision + "]";
-            // param.href += "?" + $.param({ p: revision });
+            param["data-tsvn-info"] += "[" + revision + "]";
+            param.href += "?" + $.param({ p: revision });
         }
         var elem = $("<a />");
         elem.html(info.svn_icon_image_tag);
