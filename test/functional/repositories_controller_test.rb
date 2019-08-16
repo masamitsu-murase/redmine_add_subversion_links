@@ -118,28 +118,23 @@ class RepositoriesControllerTest < ActionController::TestCase
   def check_link_to_revision(repo_url)
     # Check link_to_revision output
     # Check link in repository browser table.
-    a_attr = { :tag => "a", :attributes => { "class" => "add_subversion_links_link",
-        "href" => /^#{Regexp.escape(repo_url)}/ } }
-    img_attr = { :tag => "img", :attributes => { "class" => "add_subversion_links_icon" } }
-    td_attr = { :tag => "td", :attributes => { "class" => "revision" } }
-    assert_tag(img_attr.merge(:parent => a_attr.merge(:parent => td_attr)))
-
-    a_tag = find_tag(a_attr.merge(:child => img_attr, :parent => td_attr))
-    rev_link_tag = find_tag(:tag => "a", :before => a_attr.merge(:child => img_attr, :parent => td_attr))
-    assert a_tag, "Anchor tag in repository browser table."
-    assert rev_link_tag, "Anchor tag before svn_link."
-
-    # rev_link_tag should be '<a href="/projects/subproject1/repository/revisions/11" title="Revision 11">11</a>'
-    # So content of child node is revision.
-    revision = rev_link_tag.children.first.content
-    assert a_tag["href"].match(/\bp=#{revision}\b/), "Svn link should have p=rev parameter."
-    assert_equal "tsvn[log][#{revision},#{revision}]", a_tag["rel"], "Svn link should have tsvn log option."
+    assert_select("td.revision") do |elems|
+      elems.each do |elem|
+        # a.add_subversion_links_link is located after an anchor tag of svn link.
+        assert_select(elem, "a + a.add_subversion_links_link:match('href', ?)", /^#{Regexp.escape(repo_url)}.*\bp=\d+\b/, count: 1) do
+          assert_select "img.add_subversion_links_icon", count: 1
+        end
+      end
+    end
 
     # Check link in latest revisions table
-    assert_tag(img_attr.merge(:parent => a_attr.merge({ :parent => { :tag => "td",
-                                                          :attributes => { "class" => "id" },
-                                                          :parent => { :tag => "tr",
-                                                            :attributes => { "class" => /\bchangeset\b/ } } } })))
+    assert_select("tr.changeset > td.id") do
+      assert_select("a.add_subversion_links_link") do |elems|
+        elems.each do |elem|
+          assert_select(elem, "img.add_subversion_links_icon", count: 1)
+        end
+      end
+    end
   end
 
   def test_repository
