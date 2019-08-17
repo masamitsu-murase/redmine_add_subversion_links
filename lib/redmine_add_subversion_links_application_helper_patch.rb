@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 require_dependency("application_helper")
+require_relative("redmine_add_subversion_links_settings")
 
 module AddSubversionLinksApplicationHelperPatch
   def self.included(base)
@@ -115,20 +116,22 @@ module AddSubversionLinksApplicationHelperPatch
 
     def add_subversion_links_root_url_of_changesets(repository, changeset)
       path_str = ""
-      begin
-        if (changeset)
-          filechanges = changeset.filechanges.select{ |fc| fc.action != 'D' }
-          if (filechanges.size > 0)
-            path = repository.relative_path(filechanges.first.path).split("/")
-            filechanges.drop(1).each do |fc|
-              path = path.zip(repository.relative_path(fc.path).split("/")).take_while{ |a,b| a==b }.map(&:first)
+      unless AddSubversionLinksSettings.static_root_path_for_svn_link?
+        begin
+          if changeset && !(changeset.filechanges.all?{ |fc| fc.action == "D" })
+            filechanges = changeset.filechanges
+            if filechanges.size > 0
+              path = repository.relative_path(filechanges.first.path).split("/")
+              filechanges.drop(1).each do |fc|
+                path = path.zip(repository.relative_path(fc.path).split("/")).take_while{ |a,b| a==b }.map(&:first)
+              end
+              path_str = path.join("/")
+              path_str = "/" + path_str if (path_str[0] && path_str[0] != "/")
             end
-            path_str = path.join("/")
-            path_str = "/" + path_str if (path_str[0] && path_str[0] != "/")
           end
+        rescue
+          path_str = ""
         end
-      rescue
-        path_str = ""
       end
 
       return repository.url.sub(/\/$/, "") + path_str
