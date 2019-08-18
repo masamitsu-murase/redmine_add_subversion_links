@@ -27,8 +27,8 @@ EOS
       User.current.allowed_to?(:browse_repository, proj))
 
     repo_id = ctrl.params[:repository_id]
-    if (repo_id)
-      repos = proj.repositories.detect{ |repo| repo.identifier == repo_id }
+    if repo_id
+      repos = Repository.find_by_identifier_param(repo_id)
     else
       repos = proj.repository
     end
