@@ -55,7 +55,7 @@ class RepositoriesControllerTest < ActionController::TestCase
 
     FileUtils.mkpath(GIT_REPO_PARENT_PATH)
     git_gz_path = "#{Rails.root.expand_path}/test/fixtures/repositories/git_repository.tar.gz"
-    my_system(["tar xzf #{git_gz_path} -C #{GIT_REPO_PARENT_PATH}"])
+    my_system(["python", "-c", "import shutil; shutil.unpack_archive('#{git_gz_path}', '#{GIT_REPO_PARENT_PATH}', 'gztar')"])
   end
 
   def cleanup_git_db
