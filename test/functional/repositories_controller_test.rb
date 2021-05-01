@@ -83,7 +83,8 @@ class RepositoriesControllerTest < ActionController::TestCase
 
   def prepare_git_main_repository
     @git_main_repository = Repository::Git.create(:project => @project,
-                                           :url => GIT_REPO_PARENT_PATH + "/git_repository")
+                                           :url => GIT_REPO_PARENT_PATH + "/git_repository",
+                                           :path_encoding => "ISO-8859-1")
     assert @git_main_repository
 
     @git_main_repository.fetch_changesets
@@ -93,7 +94,8 @@ class RepositoriesControllerTest < ActionController::TestCase
   def prepare_git_sub_repository
     @git_sub_repository = Repository::Git.create(:project => @project,
                                           :url => GIT_REPO_PARENT_PATH + "/git_repository",
-                                          :is_default => false, :identifier => SUB_GIT_ID)
+                                          :is_default => false, :identifier => SUB_GIT_ID,
+                                          :path_encoding => "ISO-8859-1")
     assert @git_sub_repository
 
     @git_sub_repository.fetch_changesets
