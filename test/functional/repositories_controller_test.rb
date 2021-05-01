@@ -139,7 +139,7 @@ class RepositoriesControllerTest < ActionController::TestCase
 
   def test_repository
     prepare_main_repository
-    get :show, :id => PRJ_ID
+    get :show, :params => { :id => PRJ_ID }
     assert_response :success
     check_link_to_revision(SVN_REPO_URL)
   end
@@ -148,11 +148,11 @@ class RepositoriesControllerTest < ActionController::TestCase
     prepare_main_repository
     prepare_sub_repository
 
-    get :show, :id => PRJ_ID
+    get :show, :params => { :id => PRJ_ID }
     assert_response :success
     check_link_to_revision(SVN_REPO_URL)
 
-    get :show, :id => PRJ_ID, :repository_id => SUB_SVN_ID
+    get :show, :params => { :id => PRJ_ID, :repository_id => SUB_SVN_ID }
     assert_response :success
     check_link_to_revision(SUB_SVN_REPO_URL)
   end
@@ -162,15 +162,15 @@ class RepositoriesControllerTest < ActionController::TestCase
 
     # Check when the project has single main GIT repository
     prepare_git_main_repository
-    get :show, :id => PRJ_ID
+    get :show, :params => { :id => PRJ_ID }
     assert_response :success
 
     # Check when the project has main GIT repository and sub Subversion repository.
     prepare_sub_repository
-    get :show, :id => PRJ_ID
+    get :show, :params => { :id => PRJ_ID }
     assert_response :success
 
-    get :show, :id => PRJ_ID, :repository_id => SUB_SVN_ID
+    get :show, :params => { :id => PRJ_ID, :repository_id => SUB_SVN_ID }
     assert_response :success
     check_link_to_revision(SUB_SVN_REPO_URL)
   end
@@ -182,11 +182,11 @@ class RepositoriesControllerTest < ActionController::TestCase
     prepare_main_repository
     prepare_git_sub_repository
 
-    get :show, :id => PRJ_ID
+    get :show, :params => { :id => PRJ_ID }
     assert_response :success
     check_link_to_revision(SVN_REPO_URL)
 
-    get :show, :id => PRJ_ID, :repository_id => SUB_GIT_ID
+    get :show, :params => { :id => PRJ_ID, :repository_id => SUB_GIT_ID }
     assert_response :success
   end
 end
