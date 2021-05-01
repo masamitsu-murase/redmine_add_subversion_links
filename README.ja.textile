@@ -1,3 +1,5 @@
+!https://github.com/masamitsu-murase/redmine_add_subversion_links/actions/workflows/ci.yml/badge.svg!:https://github.com/masamitsu-murase/redmine_add_subversion_links/actions/workflows/ci.yml
+
 h1. Redmine Add Subversion Links plugin
 
 h2. 概要
@@ -60,3 +62,6 @@ h3. クライアント側の設定 (オプショナル)
 # "Open TortoiseSVN for Firefox":https://addons.mozilla.org/en-US/firefox/addon/open-tortoisesvn もしくは "Open TortoiseSVN for Google Chrome":https://chrome.google.com/webstore/detail/mhhincgnohhopnakokkcoifmnahapihn をダウンロードし、ブラウザにインストールしてください。
 # 設定画面を開き、 @TortoiseProc.exe@ のパスを設定し、対象となる Subversion リポジトリの URL を設定画面のリストに追加してください。
 
+h2. 寄付
+
+気に入っていただけましたら、画面上部の Sponsor ボタンから寄付をお願いします。
