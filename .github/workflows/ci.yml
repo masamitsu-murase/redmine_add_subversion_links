@@ -1,0 +1,62 @@
+name: CI
+
+on:
+  push:
+    branches: [ master, support_ci_with_github_actions ]
+    tags: ['*']
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  windows:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, ubuntu-latest]
+        redmine: ["4.0.9", "4.1.3", "4.2.1"]
+        ruby: ["2.6", "2.7", "3.0"]
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+    - name: "Disable git autoCRLF"
+      run: git config --global core.autoCRLF false
+
+    - name: Checkout Redmine
+      uses: actions/checkout@v2
+      with:
+        repository: redmine/redmine
+
+    - name: Checkout this plugin
+      uses: actions/checkout@v2
+      with:
+        path: plugins/redmine_add_subversion_links
+
+    - uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: ${{ matrix.ruby }}
+        bundler-cache: true
+
+    - name: Prepare database.yml (Windows)
+      if: ${{ startsWith(matrix.os, 'windows') }}
+      run: |
+        copy plugins\redmine_add_subversion_links\test\fixtures\database.yml config\database.yml
+
+    - name: Prepare database.yml (Linux)
+      if: ${{ !startsWith(matrix.os, 'windows') }}
+      run: |
+        cp plugins/redmine_add_subversion_links/test/fixtures/database.yml config/database.yml
+
+    - name: Initialize Redmine
+      run: |
+        bundle install --without rmagick
+        bundle exec rake generate_secret_token
+        bundle exec rake db:migrate
+        bundle exec rake redmine:load_default_data
+      env:
+        RAILS_ENV: test
+        REDMINE_LANG: ja
+
+    - name: Test for this plugin
+      run: |
+        bundle exec ruby plugins/redmine_add_subversion_links/test/functional/repositories_controller_test.rb
